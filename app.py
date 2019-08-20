@@ -6,7 +6,7 @@ import requests
 from sqlalchemy.orm import sessionmaker
 from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
-
+import datetime
 
 class User():
     def __init__(self, id, username, password):
@@ -93,6 +93,9 @@ def get_branches():
         limit = data['limit']
     if 'offset' in data:
         offset = data['offset']
+
+    if not offset == None:
+        limit = offset + limit
     
     s = session.query(fyle_branches).join(fyle_banks).\
                     filter(fyle_banks.columns.name==bank).\
