@@ -1,12 +1,48 @@
-from flask import Flask
+from flask import Flask, request
 import sqlalchemy as db
 import os
 import json
 import requests
 from sqlalchemy.orm import sessionmaker
-from flask import request
+from flask_jwt import JWT, jwt_required, current_identity
+from werkzeug.security import safe_str_cmp
+
+
+class User():
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+    
+    def __str__(self):
+        return 'User(id={})'.format(self.id)
+
+
+users = [
+    User(1, 'fyle', 'bangalore'),
+    User(2, 'google', 'mountainview')
+]
+
+username_table = {u.username: u for u in users}
+userid_table = {u.id: u for u in users}
+
+def authenticate(username, password):
+    user = username_table.get(username, None)
+    if user and safe_str_cmp(user.password.encode('utf-8'), password.encode('utf-8')):
+        return user
+
+def identity(payload):
+    user_id = payload['identity']
+    return userid_table.get(user_id, None)
+
 
 app = Flask(__name__)
+app.debug = True
+app.config['SECRET_KEY'] = 'super-secret'
+app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(days=5)
+
+jwt = JWT(app, authenticate, identity)
 
 engine = db.create_engine('postgresql://postgres:postgres@localhost:5432/fyle_db')
 metadata = db.MetaData()
@@ -19,15 +55,15 @@ fyle_branches = db.Table('branches', metadata, autoload=True, autoload_with=engi
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
 @app.route('/bank')
+@jwt_required()
 def get_bank():
     data = request.json
     ifsc = data['ifsc']
 
     # Querying the database
     s = session.query(fyle_branches, fyle_banks).join(fyle_banks).filter(fyle_branches.columns.bank_id == fyle_banks.columns.id).filter(fyle_branches.columns.ifsc==ifsc).all()
-
-    s = s.all()
 
     # Making a JSON out of the query result
     res = {
@@ -45,6 +81,7 @@ def get_bank():
 
 
 @app.route('/branches')
+@jwt_required()
 def get_branches():
 
     data = request.json
