@@ -3,6 +3,8 @@ import sqlalchemy as db
 import os
 import json
 import requests
+from sqlalchemy.orm import sessionmaker
+from flask import request
 
 app = Flask(__name__)
 
@@ -14,26 +16,57 @@ connection = engine.connect()
 fyle_banks = db.Table('banks', metadata, autoload=True, autoload_with=engine)
 fyle_branches = db.Table('branches', metadata, autoload=True, autoload_with=engine)
 
+Session = sessionmaker(bind=engine)
+session = Session()
 
-@app.route('/bank')
-def get_bank():
-    query = db.select([fyle_banks, fyle_branches]).where(fyle_branches.columns.ifsc=='ABHY0065001')
-    print(str(query))
-    res = connection.execute(query)
-    res_set = res.fetchall()
-    final = []
-    for bank in res_set:
-        final.append(bank)
-    return str(final)
+@app.route('/bank/<ifsc>')
+def get_bank(ifsc):
 
+    # Querying the database
+    s = session.query(fyle_branches, fyle_banks).join(fyle_banks).filter(fyle_branches.columns.bank_id == fyle_banks.columns.id).filter(fyle_branches.columns.ifsc==ifsc).all()
+
+    # Making a JSON out of the query result
+    res = {
+            'bank_name': s[0][7],
+            'ifsc': s[0][0],
+            'bank_id': s[0][1],
+            'branch': s[0][2],
+            'address': s[0][3],
+            'city': s[0][4],
+            'district': s[0][5],
+            'state': s[0][6]
+    }
+            
+    return json.dumps(res, indent=4)
 
 
 @app.route('/branches')
 def get_branches():
-    query = db.select([fyle_branches]).where(fyle_banks.columns.name=='STATE BANK OF INDIA' and fyle_branches.columns.city=='LUCKNOW')
-    res = connection.execute(query)
-    res_set = res.fetchall()
-    return str(res_set)
+
+    data = request.json
+    bank = data['bank_name']
+    city = data['city']
+    
+    s = session.query(fyle_branches).join(fyle_banks).\
+                    filter(fyle_banks.columns.name==bank).\
+            filter(fyle_banks.columns.id == fyle_branches.columns.bank_id).\
+            filter(fyle_branches.columns.city==city).\
+            all()
+
+    res = []
+    for i in s:
+        j = {
+                'ifsc': i[0],
+                'bank_id': i[1],
+                'branch': i[2],
+                'address': i[3],
+                'city': i[4],
+                'district': i[5],
+                'state': i[6]
+        }
+        res.append(j)
+    
+    return json.dumps(res, indent=4)
 
 if __name__ == '__main__':
     app.run()
