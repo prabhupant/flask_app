@@ -19,11 +19,15 @@ fyle_branches = db.Table('branches', metadata, autoload=True, autoload_with=engi
 Session = sessionmaker(bind=engine)
 session = Session()
 
-@app.route('/bank/<ifsc>')
-def get_bank(ifsc):
+@app.route('/bank')
+def get_bank():
+    data = request.json
+    ifsc = data['ifsc']
 
     # Querying the database
     s = session.query(fyle_branches, fyle_banks).join(fyle_banks).filter(fyle_branches.columns.bank_id == fyle_banks.columns.id).filter(fyle_branches.columns.ifsc==ifsc).all()
+
+    s = s.all()
 
     # Making a JSON out of the query result
     res = {
@@ -46,12 +50,17 @@ def get_branches():
     data = request.json
     bank = data['bank_name']
     city = data['city']
+    limit = None
+    offset = None
+    if 'limit' in data:
+        limit = data['limit']
+    if 'offset' in data:
+        offset = data['offset']
     
     s = session.query(fyle_branches).join(fyle_banks).\
                     filter(fyle_banks.columns.name==bank).\
             filter(fyle_banks.columns.id == fyle_branches.columns.bank_id).\
-            filter(fyle_branches.columns.city==city).\
-            all()
+            filter(fyle_branches.columns.city==city)[offset:limit]
 
     res = []
     for i in s:
