@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
 import datetime
+from flask_heroku import Heroku
 
 class User():
     def __init__(self, id, username, password):
@@ -41,6 +42,8 @@ app = Flask(__name__)
 app.debug = True
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(days=5)
+
+heroku = Heroku(app)
 
 jwt = JWT(app, authenticate, identity)
 
