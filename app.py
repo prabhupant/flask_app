@@ -58,6 +58,10 @@ fyle_branches = db.Table('branches', metadata, autoload=True, autoload_with=engi
 Session = sessionmaker(bind=engine)
 session = Session()
 
+@app.route('/')
+def index():
+    return "Welcome to the app!"
+
 
 @app.route('/bank')
 @jwt_required()
