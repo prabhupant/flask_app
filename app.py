@@ -8,22 +8,7 @@ from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
 import datetime
 from flask_heroku import Heroku
-
-class User():
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
-
-    
-    def __str__(self):
-        return 'User(id={})'.format(self.id)
-
-
-users = [
-    User(1, 'fyle', 'bangalore'),
-    User(2, 'google', 'mountainview')
-]
+from user_model import users, User
 
 username_table = {u.username: u for u in users}
 userid_table = {u.id: u for u in users}
@@ -47,7 +32,8 @@ heroku = Heroku(app)
 
 jwt = JWT(app, authenticate, identity)
 
-engine = db.create_engine('postgres://mpjmtenfmhvgzv:81a8dc3e552c0f7f9fa2c7050b97de63c65f13f46dc88f32e134d59eb94778fc@ec2-174-129-27-3.compute-1.amazonaws.com:5432/d19a8cjvcvncvc')
+#engine = db.create_engine('postgres://mpjmtenfmhvgzv:81a8dc3e552c0f7f9fa2c7050b97de63c65f13f46dc88f32e134d59eb94778fc@ec2-174-129-27-3.compute-1.amazonaws.com:5432/d19a8cjvcvncvc')
+engine = db.create_engine('postgres://postgres:postgres@localhost:5432/fyle_db')
 metadata = db.MetaData()
 
 connection = engine.connect()
@@ -63,12 +49,9 @@ def index():
     return "Welcome to the app!"
 
 
-@app.route('/bank')
+@app.route('/bank/<ifsc>')
 @jwt_required()
-def get_bank():
-    data = request.json
-    ifsc = data['ifsc']
-
+def get_bank(ifsc):
     # Querying the database
     s = session.query(fyle_branches, fyle_banks).join(fyle_banks).filter(fyle_branches.columns.bank_id == fyle_banks.columns.id).filter(fyle_branches.columns.ifsc==ifsc).all()
 
@@ -83,27 +66,23 @@ def get_bank():
             'district': s[0][5],
             'state': s[0][6]
     }
-            
+
     return json.dumps(res, indent=4)
 
 
-@app.route('/branches')
+@app.route('/branches/<bank>/<city>')
 @jwt_required()
-def get_branches():
+def get_branches(bank, city, limit=None, offset=None):
+    limit = request.args.get('limit')
+    offset = request.args.get('offset')
 
-    data = request.json
-    bank = data['bank_name']
-    city = data['city']
-    limit = None
-    offset = None
-    if 'limit' in data:
-        limit = data['limit']
-    if 'offset' in data:
-        offset = data['offset']
+    print(type(limit))
 
-    if not offset == None:
-        limit = offset + limit
-    
+    if not offset == None and not limit == None:
+        offset = int(offset)
+        limit = int(limit)
+        limit = limit + offset
+
     s = session.query(fyle_branches).join(fyle_banks).\
                     filter(fyle_banks.columns.name==bank).\
             filter(fyle_banks.columns.id == fyle_branches.columns.bank_id).\
@@ -121,7 +100,7 @@ def get_branches():
                 'state': i[6]
         }
         res.append(j)
-    
+
     return json.dumps(res, indent=4)
 
 if __name__ == '__main__':
