@@ -33,12 +33,9 @@ curl -X POST \
 * Request -
 ```
 curl -X GET \
-  https://fylepp.herokuapp.com/bank \
+  'https://fylepp.herokuapp.com/bank/ABHY0065001' \
   -H 'Authorization: JWT <JWT TOKEN>' \
   -H 'Content-Type: application/json' \
-  -d '{
-	"ifsc": "ABHY0065001"
-}'
 ```
 Here, you can change "ABHY0065001" to any IFSC you like.
 
@@ -62,14 +59,9 @@ Here, you can change "ABHY0065001" to any IFSC you like.
 * Request -
 ```
 curl -X GET \
-  https://fylepp.herokuapp.com/branches \
+  'https://fylepp.herokuapp.com/branches/STATE%20BANK%20OF%20INDIA/LUCKNOW?limit=5&offset=1' \
   -H 'Authorization: JWT <JWT TOKEN>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-"bank_name": "STATE BANK OF INDIA",
-"city": "LUCKNOW",
-"limit": 5,
-"offset": 10
+  -H 'Content-Type: application/json'
 }'
 ```
 
@@ -80,46 +72,46 @@ Note: The `limit` and `offset` parameters are optional. The API call will work w
 ```
 [
     {
-        "ifsc": "SBIN0002510",
+        "ifsc": "SBIN0001089",
         "bank_id": 1,
-        "branch": "AYODHYA",
-        "address": "FAIZABAD,  UTTAR PRADESH,  PIN  224123",
-        "city": "LUCKNOW",
-        "district": "FAIZABAD",
-        "state": "UTTAR PRADESH"
-    },
-    {
-        "ifsc": "SBIN0002593",
-        "bank_id": 1,
-        "branch": "PANDEY GANJ  LUCKNOW",
-        "address": "GANGA PRASAD VERMA ROAD RAKABGANJ LUCKNOW,226018",
+        "branch": "CHARBAGH",
+        "address": "DIST  LUCKNOW, UTTAR PRADESH 226001",
         "city": "LUCKNOW",
         "district": "LUCKNOW",
         "state": "UTTAR PRADESH"
     },
     {
-        "ifsc": "SBIN0002597",
+        "ifsc": "SBIN0001100",
         "bank_id": 1,
-        "branch": "PURANI BASTI",
-        "address": "PURANI BASTI,  BASTI, UTTAR PRADESH, PIN  272002",
-        "city": "LUCKNOW",
-        "district": "SANT KABIR NAGAR",
-        "state": "UTTAR PRADESH"
-    },
-    {
-        "ifsc": "SBIN0003222",
-        "bank_id": 1,
-        "branch": "ALAMBAGH",
-        "address": "SHRINGAR NAGAR LUCKNOW,226005 226005",
+        "branch": "CHOWK BAZAR",
+        "address": "KHUNKHUNJI ROADCHOWK , LUCKNOW, UTTAR PRADESH 226003",
         "city": "LUCKNOW",
         "district": "LUCKNOW",
         "state": "UTTAR PRADESH"
     },
     {
-        "ifsc": "SBIN0003223",
+        "ifsc": "SBIN0001132",
         "bank_id": 1,
-        "branch": "NISHANT GANJ  LUCKNOW",
-        "address": "FAIZABAD ROAD,NISHATGANJ LUCKNOW,LUCKNOW,226016",
+        "branch": "CANTT LUCKNOW",
+        "address": "DISTLUCKNOW  UTTAR PRADESH 226002",
+        "city": "LUCKNOW",
+        "district": "LUCKNOW",
+        "state": "UTTAR PRADESH"
+    },
+    {
+        "ifsc": "SBIN0001474",
+        "bank_id": 1,
+        "branch": "BISHESHWARGANJ",
+        "address": "BISHESWAR GANJ, VARANASI, PIN 221001, U.P.",
+        "city": "LUCKNOW",
+        "district": "VARANASI",
+        "state": "UTTAR PRADESH"
+    },
+    {
+        "ifsc": "SBIN0001526",
+        "bank_id": 1,
+        "branch": "AMINABAD",
+        "address": "DISTLUCKNOW  UTTAR PRADESH 226001",
         "city": "LUCKNOW",
         "district": "LUCKNOW",
         "state": "UTTAR PRADESH"
