@@ -25,15 +25,14 @@ def identity(payload):
 
 app = Flask(__name__)
 app.debug = True
-app.config['SECRET_KEY'] = 'super-secret'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(days=5)
 
 heroku = Heroku(app)
 
 jwt = JWT(app, authenticate, identity)
 
-engine = db.create_engine('postgres://mpjmtenfmhvgzv:81a8dc3e552c0f7f9fa2c7050b97de63c65f13f46dc88f32e134d59eb94778fc@ec2-174-129-27-3.compute-1.amazonaws.com:5432/d19a8cjvcvncvc')
-#engine = db.create_engine('postgres://postgres:postgres@localhost:5432/fyle_db')
+engine = db.create_engine(os.getenv('HEROKU_FYLE_DB'))
 metadata = db.MetaData()
 
 connection = engine.connect()
@@ -75,8 +74,6 @@ def get_bank(ifsc):
 def get_branches(bank, city, limit=None, offset=None):
     limit = request.args.get('limit')
     offset = request.args.get('offset')
-
-    print(type(limit))
 
     if not offset == None and not limit == None:
         offset = int(offset)
