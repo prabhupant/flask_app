@@ -8,6 +8,35 @@ A flask app to fetch the details of a bank
 * Flask (Python)
 * Postgres
 
+## Local installation
+
+Clone the repo
+
+```bash
+$ git clone https://github.com/prabhupant/flask_app.git
+```
+
+`cd` into the directory and make a virtual environment and install the requirements
+
+```bash
+$ cd flask_app
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip3 install -r requirements.txt
+```
+
+Now setup the environment variables
+
+```bash
+$ source .env
+```
+
+Run the server
+
+```bash
+$ python3 app.py
+```
+
 ## Authentication for JWT Token
 
 * Request -
