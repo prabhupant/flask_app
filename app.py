@@ -48,30 +48,36 @@ def index():
     return "Welcome to the app!"
 
 
-@app.route('/bank/<ifsc>')
+@app.route('/bank')
 @jwt_required()
-def get_bank(ifsc):
+def get_bank():
+    ifsc = request.args.get('ifsc')
+    if ifsc == None:
+        return "Please enter the ifsc code in the query parameters"
     # Querying the database
-    s = session.query(fyle_branches, fyle_banks).join(fyle_banks).filter(fyle_branches.columns.bank_id == fyle_banks.columns.id).filter(fyle_branches.columns.ifsc==ifsc).all()
+    s = session.query(fyle_branches, fyle_banks).join(fyle_banks).filter(fyle_branches.columns.bank_id == fyle_banks.columns.id).filter(fyle_branches.columns.ifsc==ifsc).one()
+
 
     # Making a JSON out of the query result
     res = {
-            'bank_name': s[0][7],
-            'ifsc': s[0][0],
-            'bank_id': s[0][1],
-            'branch': s[0][2],
-            'address': s[0][3],
-            'city': s[0][4],
-            'district': s[0][5],
-            'state': s[0][6]
+            'bank_name': s[7],
+            'ifsc': s[0],
+            'bank_id': s[1],
+            'branch': s[2],
+            'address': s[3],
+            'city': s[4],
+            'district': s[5],
+            'state': s[6]
     }
 
     return json.dumps(res, indent=4)
 
 
-@app.route('/branches/<bank>/<city>')
+@app.route('/branches')
 @jwt_required()
-def get_branches(bank, city, limit=None, offset=None):
+def get_branches():
+    bank = request.args.get('bank')
+    city = request.args.get('city')
     limit = request.args.get('limit')
     offset = request.args.get('offset')
 
