@@ -15,5 +15,5 @@ password = 'bangalore'
 
 
 users = [
-    User(1, user, password),
+    User(1, 'fyle', 'bangalore')
 ]
