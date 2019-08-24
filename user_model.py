@@ -10,10 +10,10 @@ class User():
     def __str__(self):
         return 'User(id={})'.format(self.id)
 
-user = 'fyle'
-password = 'bangalore'
+user = os.getenv('USER_FYLE')
+password = os.getenv('PASSWORD_FYLE')
 
 
 users = [
-    User(1, 'fyle', 'bangalore')
+    User(1, user, password)
 ]

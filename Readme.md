@@ -62,9 +62,9 @@ curl -X POST \
 * Request -
 ```
 curl -X GET \
-  'https://fylepp.herokuapp.com/bank/ABHY0065001' \
+  'https://fylepp.herokuapp.com/bank?ifsc=ABHY0065001' \
   -H 'Authorization: JWT <JWT TOKEN>' \
-  -H 'Content-Type: application/json' \
+  -H 'Content-Type: application/json'
 ```
 Here, you can change "ABHY0065001" to any IFSC you like.
 
@@ -88,7 +88,7 @@ Here, you can change "ABHY0065001" to any IFSC you like.
 * Request -
 ```
 curl -X GET \
-  'https://fylepp.herokuapp.com/branches/STATE%20BANK%20OF%20INDIA/LUCKNOW?limit=5&offset=1' \
+  'https://fylepp.herokuapp.com/branches?bank=STATE%20BANK%20OF%20INDIA&city=LUCKNOW&limit=5&offset=1' \
   -H 'Authorization: JWT <JWT TOKEN>' \
   -H 'Content-Type: application/json'
 }'
