@@ -10,8 +10,8 @@ class User():
     def __str__(self):
         return 'User(id={})'.format(self.id)
 
-user = os.getenv('USER_FYLE')
-password = os.getenv('PASSWORD_FYLE')
+user = 'fyle'
+password = 'bangalore'
 
 
 users = [
