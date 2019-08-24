@@ -25,7 +25,7 @@ def identity(payload):
 
 app = Flask(__name__)
 app.debug = True
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SECRET_KEY'] = 'super-secret'
 app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(days=5)
 
 heroku = Heroku(app)
