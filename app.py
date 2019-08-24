@@ -32,7 +32,7 @@ heroku = Heroku(app)
 
 jwt = JWT(app, authenticate, identity)
 
-engine = db.create_engine(os.getenv('HEROKU_FYLE_DB'))
+engine = db.create_engine('postgres://mpjmtenfmhvgzv:81a8dc3e552c0f7f9fa2c7050b97de63c65f13f46dc88f32e134d59eb94778fc@ec2-174-129-27-3.compute-1.amazonaws.com:5432/d19a8cjvcvncvc')
 metadata = db.MetaData()
 
 connection = engine.connect()
@@ -45,7 +45,7 @@ session = Session()
 
 @app.route('/')
 def index():
-    return "Welcome to the app!"
+    return "Welcome to the app! \nPlease refer to the readme in the GitHub repo to learn more about the APIs"
 
 
 @app.route('/bank')
@@ -80,6 +80,9 @@ def get_branches():
     city = request.args.get('city')
     limit = request.args.get('limit')
     offset = request.args.get('offset')
+
+    if bank == None or city == None:
+        return "Please enter both the bank name and the city"
 
     if not offset == None and not limit == None:
         offset = int(offset)
