@@ -1,6 +1,6 @@
 # Bank fetcher
 
-A flask app to fetch the details of a bank
+A flask app to fetch the details of a bank.
 
 * Heroky URL - `https://fylepp.herokuapp.com/`
 
